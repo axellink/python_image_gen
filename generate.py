@@ -34,6 +34,12 @@ def pixel(x,y):
 #        red = 0
 #        blue = 0
 
+    rf = 25
+    r = random.randint(-rf, rf)
+    red += r
+    green += r
+    blue += r
+
     return (math.floor(red), math.floor(green), math.floor(blue))
 
 #def in_image(p):
