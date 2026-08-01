@@ -19,13 +19,13 @@ def pixel(x,y):
     green = math.floor(math.sqrt(red*blue))
 #    green = 0
 
-#    if y-100 < x < y + 100 :
-#        blue -= 50
-#        red -= 50
-#
-#    if y-100 < RES_X-x < y + 100 :
-#        blue += 50
-#        red += 50
+    if y-100 < x < y + 100 :
+        blue -= 50
+        red -= 50
+
+    if y-100 < RES_X-x < y + 100 :
+        blue += 50
+        red += 50
 
 #    rl = y-150
 #    ll = y+150
