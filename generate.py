@@ -43,7 +43,7 @@ def brush(img, position, radius, color):
 
 img = Image.new("RGB",(RES_X,RES_Y))
 for x in range(RES_X):
-    y= math.floor(math.sin(x)*256)
-    radius = math.floor(abs(x-512)/10) + 5
+    y= math.floor(math.sin(x)*256)+512
+    radius = 5
     img = brush(img,(x,y),radius, pixel)
 img.save("result.png")
