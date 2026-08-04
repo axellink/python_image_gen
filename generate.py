@@ -43,8 +43,7 @@ def brush(img, position, radius, color):
 
 img = Image.new("RGB",(RES_X,RES_Y))
 for x in range(RES_X):
-    for y in range(RES_Y):
-        if random.random() > 0.9999:
-            radius = random.randint(10,50)
-            img = brush(img,(x,y),radius, pixel)
+    y= math.floor(((-64+x/8)**2))
+    radius = math.floor(abs(x-512)/5) + 5
+    img = brush(img,(x,y),radius, pixel)
 img.save("result.png")
