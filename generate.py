@@ -39,7 +39,7 @@ draw = ImageDraw.Draw(img)
 color = (255,0,0)
 for i in range(0, 360):
     x1, y1 = point_circle(OUTER_RADIUS, i)
-    x2, y2 = point_circle(INNER_RADIUS, i*4)
+    x2, y2 = point_circle(INNER_RADIUS, i*13)
     color = next_color(color, 4)
     print(color)
     draw.line((x1, y1, x2, y2), color, width = 2)
