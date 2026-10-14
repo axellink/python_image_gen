@@ -1,49 +1,56 @@
 import math
 import random
-from PIL import Image
+from PIL import Image, ImageDraw
 
 RES_X=1024
 RES_Y=1024
 
-def pixel(x,y):
-    if math.floor(x/256)%2 == 0:
-        red = x % 256
+INNER_RADIUS = 128
+OUTER_RADIUS = 512
+
+def point_circle(rad, angle):
+    _angle = math.radians(angle)
+    x = math.floor(RES_X/2) + math.floor(rad * math.sin(_angle))
+    y = math.floor(RES_Y/2) + math.floor(rad * math.cos(_angle))
+    return (x,y)
+
+def next_color(color, step = 1):
+    array = list(color)
+    first255 = array.index(255)
+    before = (first255 - 1) % 3
+    after = (first255 + 1) % 3
+    if array[after] == 255:
+        array[first255] -= step
+    elif array[before] > 0 :
+        array[before] -= step
+        if array[before] < 0 :
+            array[after] = -1 * array[before]
+            array[before] = 0
     else:
-        red = 256 - (x%256)
-
-    if math.floor(y/256)%2 == 0:
-        blue = y % 256
-    else:
-        blue = 256 - (y%256)
-
-    green = 0
-
-    if y-100 < x < y + 100 :
-        blue -= 50
-        red -= 50
-
-    if y-100 < RES_X-x < y + 100 :
-        blue += 50
-        red += 50
-
-    return (math.floor(red), math.floor(green), math.floor(blue))
-
-def in_image(p):
-    x = p[0]
-    y = p[1]
-    return 0 <= x < RES_X and 0 <= y < RES_Y
-
-def brush(img, position, radius, color):
-    x,y = position
-    for i in range(x-radius, x+radius+1):
-        for j in range(y-radius, y+radius +1):
-            if math.sqrt((x-i)**2 + (y-j)**2) <= radius and in_image((i,j)):
-                img.putpixel((i,j),color(i,j))
-    return img
+        array[after] += step
+        if array[after] > 255:
+            array[first255] -= array[after] % 255
+            array[after] = 255
+    return (array[0], array[1], array[2])
+    
 
 img = Image.new("RGB",(RES_X,RES_Y))
-for x in range(RES_X):
-    y= math.floor(math.sin(x*8)*500)+512
-    radius = 5
-    img = brush(img,(x,y),radius, pixel)
+draw = ImageDraw.Draw(img)
+color = (255,0,0)
+for i in range(0, 360):
+    x1, y1 = point_circle(OUTER_RADIUS, i)
+    x2, y2 = point_circle(INNER_RADIUS, i*4)
+    color = next_color(color, 4)
+    print(color)
+    draw.line((x1, y1, x2, y2), color, width = 2)
+draw.ellipse((RES_X/2 - INNER_RADIUS, 
+              RES_Y/2 - INNER_RADIUS, 
+              RES_X/2 + INNER_RADIUS,
+              RES_Y/2 + INNER_RADIUS),
+              (0,0,0,0), (255,255,255,0), 3)
+draw.ellipse((RES_X/2 - OUTER_RADIUS, 
+              RES_Y/2 - OUTER_RADIUS, 
+              RES_X/2 + OUTER_RADIUS,
+              RES_Y/2 + OUTER_RADIUS),
+              outline = (255,255,255,0), width = 5)
 img.save("result.png")
